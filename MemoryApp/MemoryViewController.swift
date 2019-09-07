@@ -33,17 +33,15 @@ class MemoryViewController: UIViewController {
         
         assert(item != nil, "You must provide a memory item before trying to show view controller.")
         
-        showText()
+        textView.attributedText = showText(for: item)
         
         let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(wordsTapped))
         textView.addGestureRecognizer(tapRecognizer)
     }
     
-    func showText() {
+    func showText(for memoryItem: MemoryItem) -> NSAttributedString {
         
-        textView.text = item.text
-        
-        let words = item.text.components(separatedBy: " ")
+        let words = memoryItem.text.components(separatedBy: " ")
         let output = NSMutableAttributedString()
         
         let space = NSAttributedString(string: " ", attributes: visibleText)
@@ -53,7 +51,6 @@ class MemoryViewController: UIViewController {
             if index < blankCounter {
                 let attributedWord = NSAttributedString(string: word, attributes: visibleText)
                 output.append(attributedWord)
-                //output += "\(word) "
             } else {
                 var strippedWord = word
                 var punctuation: String?
@@ -64,28 +61,23 @@ class MemoryViewController: UIViewController {
                 
                 let attributedWord = NSAttributedString(string: word, attributes: invisibleText)
                 output.append(attributedWord)
-                //let blank = String(repeating: "_", count: word.count)
-                //output += "\(blank) "
                 
                 if let symbol = punctuation {
                     let attributedPunctuation = NSMutableAttributedString(string: symbol, attributes: visibleText)
                     
                     output.append(attributedPunctuation)
                 }
-                
             }
             
             output.append(space)
         }
-        
-        
-        
-        textView.attributedText = output
+    
+        return output
     }
     
     @objc func wordsTapped() {
         blankCounter += 1
-        showText()
+        textView.attributedText = showText(for: item)
     }
     
 }
